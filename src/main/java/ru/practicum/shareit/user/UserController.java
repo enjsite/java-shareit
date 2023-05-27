@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TODO Sprint add-controllers.

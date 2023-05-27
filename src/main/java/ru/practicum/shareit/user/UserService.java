@@ -8,8 +8,12 @@ import java.util.List;
 public interface UserService {
 
     User get(long id);
+
     List<User> getAllUsers();
+
     User create(User user) throws ValidationException;
+
     User update(long id, String name, String email) throws ValidationException;
+
     void removeUserById(long id);
 }
