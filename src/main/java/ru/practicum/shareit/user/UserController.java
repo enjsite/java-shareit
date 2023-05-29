@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.UserMapping;
+import ru.practicum.shareit.user.model.dto.UserDto;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TODO Sprint add-controllers.
@@ -21,14 +24,16 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public User get(@PathVariable Integer id) throws ValidationException {
+    public UserDto get(@PathVariable Integer id) throws ValidationException {
         log.info("Запрос на получение юзера с id " + id);
-        return userService.get(id);
+        return UserMapping.toUserDto(userService.get(id));
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers().stream()
+                .map(UserMapping::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @PostMapping

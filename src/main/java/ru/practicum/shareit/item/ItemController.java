@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemMapping;
+import ru.practicum.shareit.item.model.dto.ItemDto;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TODO Sprint add-controllers.
@@ -20,21 +23,25 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{itemId}")
-    public Item get(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Integer itemId) {
+    public ItemDto get(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Integer itemId) {
         log.info("Запрос на получение вещи с itemId " + itemId);
-        return itemService.get(userId, itemId);
+        return ItemMapping.toItemDto(itemService.get(userId, itemId));
     }
 
     @GetMapping
-    public List<Item> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Запрос на получение вещей пользователя " + userId);
-        return itemService.getItems(userId);
+        return itemService.getItems(userId).stream()
+                .map(ItemMapping::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/search")
-    public List<Item> get(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text) {
+    public List<ItemDto> get(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text) {
         log.info("Запрос на поиск вещи по названию или описанию " + text);
-        return itemService.search(userId, text);
+        return itemService.search(userId, text).stream()
+                .map(ItemMapping::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @PostMapping

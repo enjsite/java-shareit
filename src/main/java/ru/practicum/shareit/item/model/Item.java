@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
+import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -22,7 +23,8 @@ public class Item {
     private Boolean available;
 
     private long owner;
-    private long request;
+
+    private ItemRequest request;
 
     public Item(String name, String description, Boolean available) {
         this.name = name;
