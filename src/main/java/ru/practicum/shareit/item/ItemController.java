@@ -3,10 +3,14 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.NotAvailableException;
+import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapping;
 import ru.practicum.shareit.item.model.dto.ItemDto;
+import ru.practicum.shareit.item.model.dto.ItemForOwnerDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,17 +27,15 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Integer itemId) {
+    public ItemForOwnerDto get(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Integer itemId) {
         log.info("Запрос на получение вещи с itemId " + itemId);
-        return ItemMapping.toItemDto(itemService.get(userId, itemId));
+        return itemService.get(userId, itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemForOwnerDto> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Запрос на получение вещей пользователя " + userId);
-        return itemService.getItems(userId).stream()
-                .map(ItemMapping::toItemDto)
-                .collect(Collectors.toList());
+        return itemService.getItems(userId);
     }
 
     @GetMapping("/search")
@@ -63,5 +65,13 @@ public class ItemController {
     public void deleteItem(@RequestHeader("X-Sharer-User-Id") long userId,
                            @PathVariable long itemId) {
         itemService.deleteItem(userId, itemId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long userId,
+                                 @PathVariable Integer itemId,
+                                 @RequestBody Comment comment) throws NotAvailableException {
+        log.info("Получен запрос на добавление комментария к вещи с id " + itemId);
+        return itemService.addComment(userId, itemId, comment);
     }
 }

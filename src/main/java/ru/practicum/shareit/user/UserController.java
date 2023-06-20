@@ -45,8 +45,8 @@ public class UserController {
     @PatchMapping("/{id}")
     public User update(@PathVariable Integer id,
                        @RequestBody User user) throws ValidationException {
-        log.info("Получен запрос на апдейт юзера с id " + id + ", name " + user.getName() + " email " + user.getEmail());
-        return userService.update(id, user.getName(), user.getEmail());
+        log.info("Получен запрос на апдейт юзера с id " + id);
+        return userService.update(id, user);
     }
 
     @DeleteMapping("/{id}")

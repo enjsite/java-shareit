@@ -2,17 +2,18 @@ package ru.practicum.shareit.item.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @AllArgsConstructor
-public class ItemDto {
+@NoArgsConstructor
+public class ItemForOwnerDto {
 
     private long id;
 
@@ -22,13 +23,17 @@ public class ItemDto {
 
     private Boolean available;
 
-    private long owner;
+    private User owner;
 
     private Long request;
 
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
+
     private List<CommentDto> comments = new ArrayList<>();
 
-    public ItemDto(long id, String name, String description, Boolean available, long owner, Long request) {
+    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long request) {
         this.id = id;
         this.name = name;
         this.description = description;

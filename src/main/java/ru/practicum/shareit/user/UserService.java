@@ -13,7 +13,7 @@ public interface UserService {
 
     User create(User user) throws ValidationException;
 
-    User update(long id, String name, String email) throws ValidationException;
+    User update(long id, User user) throws ValidationException;
 
     void removeUserById(long id);
 }
