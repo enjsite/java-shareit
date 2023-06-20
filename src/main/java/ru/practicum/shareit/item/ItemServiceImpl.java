@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NullPointerException("Не существует вещи с id " + itemId);
         }
         var itemForOwner = ItemMapping.toItemForOwnerDto(item);
-        if(item.getOwner().getId() == userId) {
+        if (item.getOwner().getId() == userId) {
             itemForOwner = setBookingsForItem(itemForOwner);
         }
         itemForOwner = setCommentsForItem(itemForOwner);

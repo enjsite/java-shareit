@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class BookingMapper {
 
-    final static DateTimeFormatter formatter = DateTimeFormatter
+    static final DateTimeFormatter formatter = DateTimeFormatter
             .ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public static BookingDto toBookingDto(Booking booking) {
