@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
@@ -17,26 +21,38 @@ public class BookingDto {
 
     private long itemId;
 
-    private String start;
+    private LocalDateTime start;
 
-    private String end;
+    private LocalDateTime end;
 
-    private long bookerId;
+    private User booker;
 
     private BookingStatus status = BookingStatus.WAITING;
 
-    public BookingDto(long itemId, String start, String end, long bookerId) {
+    private Item item;
+
+    public BookingDto(long itemId, LocalDateTime start, LocalDateTime end) {
         this.itemId = itemId;
         this.start = start;
         this.end = end;
-        this.bookerId = bookerId;
     }
 
-    public BookingDto(long id, long itemId, String start, String end, long bookerId) {
+    public BookingDto(long id, long itemId, LocalDateTime start, LocalDateTime end, User booker) {
         this.id = id;
         this.itemId = itemId;
         this.start = start;
         this.end = end;
-        this.bookerId = bookerId;
+        this.booker = booker;
+    }
+
+    public BookingDto(long id, long itemId, LocalDateTime start, LocalDateTime end, User booker, Item item,
+                      BookingStatus status) {
+        this.id = id;
+        this.itemId = itemId;
+        this.start = start;
+        this.end = end;
+        this.booker = booker;
+        this.item = item;
+        this.status = status;
     }
 }

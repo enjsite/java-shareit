@@ -1,12 +1,12 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingDtoForItems;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -20,9 +20,23 @@ public class BookingMapper {
         return new BookingDto(
                 booking.getId(),
                 booking.getItem().getId(),
-                booking.getStart().toString(),
-                booking.getEnd().toString(),
-                booking.getBooker().getId()
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getBooker(),
+                booking.getItem(),
+                booking.getStatus()
+        );
+    }
+
+    public static BookingDtoForItems toBookingDtoForItems(Booking booking) {
+
+        return new BookingDtoForItems(
+                booking.getId(),
+                booking.getItem().getId(),
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getBooker().getId(),
+                booking.getStatus()
         );
     }
 
@@ -35,8 +49,10 @@ public class BookingMapper {
         if (bookingDto.getStart() == null || bookingDto.getEnd() == null) {
             throw new ValidationException("Дата не задана");
         }
-        booking.setStart(LocalDateTime.from(formatter.parse(bookingDto.getStart())));
-        booking.setEnd(LocalDateTime.from(formatter.parse(bookingDto.getEnd())));
+        //booking.setStart(LocalDateTime.from(formatter.parse(bookingDto.getStart())));
+        //booking.setEnd(LocalDateTime.from(formatter.parse(bookingDto.getEnd())));
+        booking.setStart(bookingDto.getStart());
+        booking.setEnd(bookingDto.getEnd());
 
         return booking;
     }

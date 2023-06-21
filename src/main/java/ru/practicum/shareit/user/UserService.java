@@ -1,19 +1,19 @@
 package ru.practicum.shareit.user;
 
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
 
-    User get(long id);
+    UserDto get(long id);
 
-    List<User> getAllUsers();
+    List<UserDto> getAllUsers();
 
-    User create(User user) throws ValidationException;
+    UserDto create(UserDto userDto) throws ValidationException;
 
-    User update(long id, User user) throws ValidationException;
+    UserDto update(long id, UserDto userDto) throws ValidationException;
 
     void removeUserById(long id);
 }

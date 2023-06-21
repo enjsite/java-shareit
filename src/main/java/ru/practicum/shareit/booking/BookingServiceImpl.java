@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
 
     @Override
-    public Booking add(long userId, BookingDto bookingDto) throws NotAvailableException, ValidationException {
+    public BookingDto add(long userId, BookingDto bookingDto) throws NotAvailableException, ValidationException {
         User booker = userRepository.findById(userId).orElseThrow();
         Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow();
         if (!item.getAvailable()) {
@@ -39,11 +40,11 @@ public class BookingServiceImpl implements BookingService {
 
         var booking = BookingMapper.mapToBooking(bookingDto, booker, item);
         validate(booking);
-        return bookingRepository.save(booking);
+        return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
     @Override
-    public Booking approved(long userId, long bookingId, boolean approved) throws ValidationException {
+    public BookingDto approved(long userId, long bookingId, boolean approved) throws ValidationException {
         User user = userRepository.findById(userId).orElseThrow();
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if (booking.getItem().getOwner().getId() != userId) {
@@ -58,11 +59,11 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(BookingStatus.REJECTED);
         }
         var updatedBooking = bookingRepository.save(booking);
-        return updatedBooking;
+        return BookingMapper.toBookingDto(updatedBooking);
     }
 
     @Override
-    public Booking get(long userId, long bookingId) throws NotAvailableException {
+    public BookingDto get(long userId, long bookingId) throws NotAvailableException {
         User user = userRepository.findById(userId).orElseThrow();
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
@@ -70,11 +71,11 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Нет доступа");
         }
 
-        return booking;
+        return BookingMapper.toBookingDto(booking);
     }
 
     @Override
-    public List<Booking> getAll(long userId, String status) throws NotSupportedException {
+    public List<BookingDto> getAll(long userId, String status) throws NotSupportedException {
         User user = userRepository.findById(userId).orElseThrow();
         List<Booking> bookings;
 
@@ -102,15 +103,13 @@ public class BookingServiceImpl implements BookingService {
                 throw new NotSupportedException("Unknown state: UNSUPPORTED_STATUS");
         }
 
-        return bookings;
+        return bookings.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Booking> getAllForOwner(long userId, String status) throws NotSupportedException {
+    public List<BookingDto> getAllForOwner(long userId, String status) throws NotSupportedException {
         User user = userRepository.findById(userId).orElseThrow();
         List<Booking> bookings = new ArrayList<>();
-
-        List<Item> ownerItems = itemRepository.findAllByOwnerId(userId);
 
         switch (status) {
             case "ALL":
@@ -136,7 +135,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new NotSupportedException("Unknown state: UNSUPPORTED_STATUS");
         }
 
-        return bookings;
+        return bookings.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     private void validate(Booking booking) throws ValidationException {

@@ -7,8 +7,6 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * TODO Sprint add-controllers.
@@ -24,15 +22,12 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Имя не должно быть пустым")
     @Column(name = "name")
     private String name;
 
-    @NotBlank(message = "Описание не должно быть пустым")
     @Column(name = "description")
     private String description;
 
-    @NotNull(message = "Доступность должна быть указана")
     @Column(name = "available")
     private Boolean available;
 

@@ -23,7 +23,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public Booking add(@RequestHeader("X-Sharer-User-Id") long userId,
+    public BookingDto add(@RequestHeader("X-Sharer-User-Id") long userId,
                     @Valid @RequestBody BookingDto bookingDto) throws NotAvailableException, ValidationException {
         log.info("Получен запрос на создание нового бронирования:  от пользователя " + userId);
 
@@ -31,7 +31,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public Booking approved(@RequestHeader("X-Sharer-User-Id") long userId,
+    public BookingDto approved(@RequestHeader("X-Sharer-User-Id") long userId,
                             @PathVariable Integer bookingId,
                             @RequestParam boolean approved) throws ValidationException {
 
@@ -41,27 +41,20 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public Booking get(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Integer bookingId) throws NotAvailableException {
+    public BookingDto get(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Integer bookingId) throws NotAvailableException {
         log.info("Запрос на просмотр бронирования " + bookingId);
         return bookingService.get(userId, bookingId);
     }
 
-    @GetMapping
-    public List<Booking> getAll_(@RequestHeader("X-Sharer-User-Id") long userId,
-                                @RequestParam(defaultValue = "ALL", required = false) String state) throws NotAvailableException, NotSupportedException {
-        log.info("Запрос на просмотр бронирований от пользователя " + userId);
-        return bookingService.getAll(userId, state);
-    }
-
-    @GetMapping("/")
-    public List<Booking> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
+    @GetMapping({"/", ""})
+    public List<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                 @RequestParam(defaultValue = "ALL", required = false) String state) throws NotAvailableException, NotSupportedException {
         log.info("Запрос на просмотр бронирований от пользователя " + userId);
         return bookingService.getAll(userId, state);
     }
 
     @GetMapping("/owner")
-    public List<Booking> getAllForOwner(@RequestHeader("X-Sharer-User-Id") long userId,
+    public List<BookingDto> getAllForOwner(@RequestHeader("X-Sharer-User-Id") long userId,
                                 @RequestParam(defaultValue = "ALL", required = false) String state) throws NotAvailableException, NotSupportedException {
         log.info("Запрос на просмотр бронирований от пользователя " + userId);
         return bookingService.getAllForOwner(userId, state);

@@ -7,14 +7,11 @@ import ru.practicum.shareit.exception.NotAvailableException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemMapping;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.model.dto.ItemForOwnerDto;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * TODO Sprint add-controllers.
@@ -41,24 +38,22 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> get(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text) {
         log.info("Запрос на поиск вещи по названию или описанию " + text);
-        return itemService.search(userId, text).stream()
-                .map(ItemMapping::toItemDto)
-                .collect(Collectors.toList());
+        return itemService.search(userId, text);
     }
 
     @PostMapping
-    public Item add(@RequestHeader("X-Sharer-User-Id") long userId,
-                    @Valid @RequestBody Item item) {
-        log.info("Получен запрос на создание новой вещи: " + item + " от пользователя " + userId);
-        return itemService.addNewItem(userId, item);
+    public ItemDto add(@RequestHeader("X-Sharer-User-Id") long userId,
+                    @Valid @RequestBody ItemDto itemDto) {
+        log.info("Получен запрос на создание новой вещи: " + itemDto + " от пользователя " + userId);
+        return itemService.addNewItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Item update(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ItemDto update(@RequestHeader("X-Sharer-User-Id") long userId,
                        @PathVariable Integer itemId,
-                       @RequestBody Item item) throws ValidationException {
+                       @RequestBody ItemDto itemDto) throws ValidationException {
         log.info("Получен запрос на апдейт вещи с id " + itemId);
-        return itemService.update(itemId, item, userId);
+        return itemService.update(itemId, itemDto, userId);
     }
 
     @DeleteMapping("/{itemId}")

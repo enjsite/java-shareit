@@ -17,8 +17,8 @@ public class ItemMapping {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getOwner().getId(),
-                item.getRequest() != null ? item.getRequest().getId() : null
+                item.getOwner(),
+                item.getRequest() != null ? item.getRequest() : null
         );
     }
 
@@ -36,8 +36,13 @@ public class ItemMapping {
 
     public static Item mapToItem(ItemDto itemDto, User user) {
         Item item = new Item();
-        item.setOwner(user);
         item.setId(itemDto.getId());
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(user);
+        item.setRequest(itemDto.getRequest());
+
         return item;
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoForItems;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -27,9 +28,9 @@ public class ItemForOwnerDto {
 
     private Long request;
 
-    private BookingDto lastBooking;
+    private BookingDtoForItems lastBooking;
 
-    private BookingDto nextBooking;
+    private BookingDtoForItems nextBooking;
 
     private List<CommentDto> comments = new ArrayList<>();
 

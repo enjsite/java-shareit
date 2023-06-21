@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.UserMapping;
+import ru.practicum.shareit.user.model.dto.UserDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,38 +19,40 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User get(long id) {
+    public UserDto get(long id) {
         User user = userRepository.getReferenceById(id);
         if (user == null) {
             log.error("Не существует пользователя с id " + id);
             throw new NullPointerException("Не существует пользователя с id " + id);
         }
-        return user;
+        return UserMapping.toUserDto(user);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapping::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User create(User user) {
-        var newUser = userRepository.save(user);
+    public UserDto create(UserDto userDto) {
+        var newUser = userRepository.save(UserMapping.mapToUser(userDto));
         log.info("Создан новый пользователь с Id " + newUser.getId());
-        return newUser;
+        return UserMapping.toUserDto(newUser);
     }
 
     @Override
-    public User update(long id, User user) throws ValidationException {
+    public UserDto update(long id, UserDto userDto) throws ValidationException {
         var updatedUser = userRepository.getReferenceById(id);
-        if (user.getName() != null) {
-            updatedUser.setName(user.getName());
+        if (userDto.getName() != null) {
+            updatedUser.setName(userDto.getName());
         }
-        if (user.getEmail() != null) {
-            updatedUser.setEmail(user.getEmail());
+        if (userDto.getEmail() != null) {
+            updatedUser.setEmail(userDto.getEmail());
         }
 
-        return userRepository.save(updatedUser);
+        return UserMapping.toUserDto(userRepository.save(updatedUser));
     }
 
     @Override
@@ -58,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateEmail(String email, long userId) throws ValidationException {
         var users = getAllUsers();
-        for (User u: users) {
+        for (UserDto u: users) {
             if (u.getEmail().equals(email) && u.getId() != userId) {
                 log.error("Дубликат email");
                 throw new ValidationException("Дубликат email;");
@@ -68,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateEmail(String email) throws ValidationException {
         var users = getAllUsers();
-        for (User u: users) {
+        for (UserDto u: users) {
             if (u.getEmail().equals(email)) {
                 log.error("Дубликат email");
                 throw new ValidationException("Дубликат email;");
