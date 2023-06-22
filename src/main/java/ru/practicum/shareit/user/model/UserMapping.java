@@ -14,4 +14,12 @@ public class UserMapping {
                 user.getEmail()
         );
     }
+
+    public static User mapToUser(UserDto userDto) {
+        return new User(
+                userDto.getId(),
+                userDto.getName(),
+                userDto.getEmail()
+        );
+    }
 }

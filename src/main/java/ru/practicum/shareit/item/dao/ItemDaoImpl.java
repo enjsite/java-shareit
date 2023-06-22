@@ -27,7 +27,7 @@ public class ItemDaoImpl implements ItemDao {
     public List<Item> findByUserId(long userId) {
         var userItems = new ArrayList<Item>();
         for (Item item: items.values()) {
-            if (item.getOwner() == userId) {
+            if (item.getOwner().getId() == userId) {
                 userItems.add(item);
             }
         }
@@ -40,7 +40,7 @@ public class ItemDaoImpl implements ItemDao {
         if (item.getId() == 0) {
             item.setId(genId);
         }
-        item.setOwner(userId);
+        //item.setOwner(userId);
         items.put(item.getId(), item);
         log.info("Вещь c id " + item.getId() + " добавлена.");
         return item;
