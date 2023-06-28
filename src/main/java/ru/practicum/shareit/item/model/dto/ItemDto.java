@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotBlank;
@@ -33,7 +32,7 @@ public class ItemDto {
 
     private User owner;
 
-    private ItemRequest request;
+    private Long requestId;
 
     private List<CommentDto> comments = new ArrayList<>();
 
@@ -43,12 +42,12 @@ public class ItemDto {
         this.available = available;
     }
 
-    public ItemDto(long id, String name, String description, Boolean available, User owner, ItemRequest request) {
+    public ItemDto(long id, String name, String description, Boolean available, User owner, Long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
-        this.request = request;
+        this.requestId = requestId;
     }
 }

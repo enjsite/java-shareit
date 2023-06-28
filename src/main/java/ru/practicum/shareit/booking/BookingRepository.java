@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
@@ -12,9 +14,10 @@ import java.util.List;
 @Component
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findAllByBookerOrderByStartDesc(User user);
+    //List<Booking> findAllByBookerOrderByStartDesc(User user);
+    Page<Booking> findAllByBookerOrderByStartDesc(User user, Pageable pageable);
 
-    List<Booking> findAllByItemOwnerIdOrderByStartDesc(long userId);
+    Page<Booking> findAllByItemOwnerIdOrderByStartDesc(long userId, Pageable pageable);
 
     @Query(value = " select b from Booking b " +
             "where b.booker = ?1 " +
@@ -53,4 +56,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerAndEndBeforeOrderByStartDesc(User user, LocalDateTime now);
 
     List<Booking> findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime now);
+
+    Page<Booking> findAllByBookerIdOrderByStartDesc(long userId, Pageable pageable);
 }

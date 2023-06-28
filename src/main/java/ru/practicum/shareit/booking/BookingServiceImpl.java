@@ -2,6 +2,9 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.NotAvailableException;
@@ -75,13 +78,23 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAll(long userId, String status) throws NotSupportedException {
+    public List<BookingDto> getAll(long userId, String status, Integer from, Integer size) throws NotSupportedException, ValidationException {
         User user = userRepository.findById(userId).orElseThrow();
+
+        if (from == null && size == null) {
+            from = 0;
+            size = 100;
+        } else if (from < 0 || size < 1) {
+            throw new ValidationException("Недопустимые значения пагинации");
+        }
+
+        Pageable pageable = PageRequest.of(from/size, size, Sort.by(Sort.Direction.DESC, "start"));
+
         List<Booking> bookings;
 
         switch (status) {
             case "ALL":
-                bookings = bookingRepository.findAllByBookerOrderByStartDesc(user);
+                bookings = bookingRepository.findAllByBookerOrderByStartDesc(user, pageable).getContent();
                 break;
             case "CURRENT":
                 bookings = bookingRepository.findAllByBookerCurrentOrderByStartDesc(user, LocalDateTime.now());
@@ -107,13 +120,22 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllForOwner(long userId, String status) throws NotSupportedException {
+    public List<BookingDto> getAllForOwner(long userId, String status, Integer from, Integer size) throws NotSupportedException, ValidationException {
         User user = userRepository.findById(userId).orElseThrow();
+
+        if (from == null && size == null) {
+            from = 0;
+            size = 100;
+        } else if (from < 0 || size < 1) {
+            throw new ValidationException("Недопустимые значения пагинации");
+        }
+        Pageable pageable = PageRequest.of(from/size, size, Sort.by(Sort.Direction.DESC, "start"));
+
         List<Booking> bookings = new ArrayList<>();
 
         switch (status) {
             case "ALL":
-                bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+                bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable).getContent();
                 break;
             case "CURRENT":
                 bookings = bookingRepository.findAllByItemOwnerIdCurrentOrderByStartDesc(user, LocalDateTime.now());

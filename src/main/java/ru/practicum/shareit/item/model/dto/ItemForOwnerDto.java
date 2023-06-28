@@ -25,7 +25,7 @@ public class ItemForOwnerDto {
 
     private User owner;
 
-    private Long request;
+    private Long requestId;
 
     private BookingDtoForItems lastBooking;
 
@@ -33,12 +33,12 @@ public class ItemForOwnerDto {
 
     private List<CommentDto> comments = new ArrayList<>();
 
-    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long request) {
+    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
-        this.request = request;
+        this.requestId = requestId;
     }
 }

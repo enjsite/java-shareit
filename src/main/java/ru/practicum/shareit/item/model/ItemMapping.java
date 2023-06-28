@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.dto.ItemDto;
 import ru.practicum.shareit.item.model.dto.ItemForOwnerDto;
+import ru.practicum.shareit.item.model.dto.ItemForRequestDto;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 @Service
@@ -18,7 +20,7 @@ public class ItemMapping {
                 item.getDescription(),
                 item.getAvailable(),
                 item.getOwner(),
-                item.getRequest() != null ? item.getRequest() : null
+                item.getRequest() != null ? item.getRequest().getId() : null
         );
     }
 
@@ -34,14 +36,26 @@ public class ItemMapping {
         );
     }
 
-    public static Item mapToItem(ItemDto itemDto, User user) {
+    public static ItemForRequestDto toItemForRequestDto(Item item) {
+
+        return new ItemForRequestDto(
+                item.getId(),
+                item.getName(),
+                item.getOwner().getId(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequest().getId()
+        );
+    }
+
+    public static Item mapToItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
         Item item = new Item();
         item.setId(itemDto.getId());
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
         item.setOwner(user);
-        item.setRequest(itemDto.getRequest());
+        item.setRequest(itemRequest);
 
         return item;
     }
