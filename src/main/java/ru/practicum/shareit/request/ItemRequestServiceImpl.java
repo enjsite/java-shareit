@@ -72,7 +72,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new ValidationException("Недопустимые значения пагинации");
         }
 
-        Pageable pageable = PageRequest.of(from/size, size, Sort.by(Sort.Direction.ASC, "created"));
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "created"));
         Page<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNot(userId, pageable);
 
         return itemRequests.stream()

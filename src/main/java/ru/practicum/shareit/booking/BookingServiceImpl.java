@@ -88,7 +88,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Недопустимые значения пагинации");
         }
 
-        Pageable pageable = PageRequest.of(from/size, size, Sort.by(Sort.Direction.DESC, "start"));
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "start"));
 
         List<Booking> bookings;
 
@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
         } else if (from < 0 || size < 1) {
             throw new ValidationException("Недопустимые значения пагинации");
         }
-        Pageable pageable = PageRequest.of(from/size, size, Sort.by(Sort.Direction.DESC, "start"));
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "start"));
 
         List<Booking> bookings = new ArrayList<>();
 
