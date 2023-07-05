@@ -14,7 +14,6 @@ import java.util.List;
 @Component
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    //List<Booking> findAllByBookerOrderByStartDesc(User user);
     Page<Booking> findAllByBookerOrderByStartDesc(User user, Pageable pageable);
 
     Page<Booking> findAllByItemOwnerIdOrderByStartDesc(long userId, Pageable pageable);
@@ -23,39 +22,37 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where b.booker = ?1 " +
             " and (?2 BETWEEN b.start AND b.end)" +
             " order by b.start desc")
-    List<Booking> findAllByBookerCurrentOrderByStartDesc(User user, LocalDateTime curTime);
+    Page<Booking> findAllByBookerCurrentOrderByStartDesc(User user, LocalDateTime curTime, Pageable pageable);
 
     @Query(value = " select b from Booking b " +
             "where b.booker = ?1 " +
             " and b.start > ?2" +
             " order by b.start desc")
-    List<Booking> findAllByBookerFutureOrderByStartDesc(User user, LocalDateTime curTime);
+    Page<Booking> findAllByBookerFutureOrderByStartDesc(User user, LocalDateTime curTime, Pageable pageable);
 
     @Query(value = " select b from Booking b " +
             "where b.item.owner = ?1 " +
             " and (?2 BETWEEN b.start AND b.end)" +
             " order by b.start desc")
-    List<Booking> findAllByItemOwnerIdCurrentOrderByStartDesc(User user, LocalDateTime curTime);
+    Page<Booking> findAllByItemOwnerIdCurrentOrderByStartDesc(User user, LocalDateTime curTime, Pageable pageable);
 
     @Query(value = " select b from Booking b " +
             "where b.item.owner = ?1 " +
             " and b.start > ?2" +
             " order by b.start desc")
-    List<Booking> findAllByItemOwnerIdFutureOrderByStartDesc(User user, LocalDateTime curTime);
+    Page<Booking> findAllByItemOwnerIdFutureOrderByStartDesc(User user, LocalDateTime curTime, Pageable pageable);
 
     Booking findTopByItemIdAndStartBeforeOrderByStartDesc(long id, LocalDateTime now);
 
     Booking findTopByItemIdAndStartAfterOrderByStartAsc(long id, LocalDateTime now);
 
-    List<Booking> findAllByItemOwnerIdAndStatusOrderByStartDesc(long userId, BookingStatus rejected);
+    Page<Booking> findAllByItemOwnerIdAndStatusOrderByStartDesc(long userId, BookingStatus status, Pageable pageable);
 
-    List<Booking> findAllByBookerAndStatusOrderByStartDesc(User user, BookingStatus rejected);
+    Page<Booking> findAllByBookerAndStatusOrderByStartDesc(User user, BookingStatus status, Pageable pageable);
 
     Booking findFirstByBookerAndItemAndEndBefore(User author, Item item, LocalDateTime now);
 
-    List<Booking> findAllByBookerAndEndBeforeOrderByStartDesc(User user, LocalDateTime now);
+    Page<Booking> findAllByBookerAndEndBeforeOrderByStartDesc(User user, LocalDateTime now, Pageable pageable);
 
-    List<Booking> findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime now);
-
-    Page<Booking> findAllByBookerIdOrderByStartDesc(long userId, Pageable pageable);
+    Page<Booking> findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(long userId, LocalDateTime now, Pageable pageable);
 }

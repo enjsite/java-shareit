@@ -49,8 +49,8 @@ public class BookingController {
     @GetMapping({"/", ""})
     public List<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                    @RequestParam(defaultValue = "ALL", required = false) String state,
-                                   @RequestParam(required = false) Integer from,
-                                   @RequestParam(required = false) Integer size) throws NotAvailableException, NotSupportedException, ValidationException {
+                                   @RequestParam(required = false, defaultValue = "0") Integer from,
+                                   @RequestParam(required = false, defaultValue = "100") Integer size) throws NotAvailableException, NotSupportedException, ValidationException {
         log.info("Запрос на просмотр бронирований от пользователя " + userId);
         return bookingService.getAll(userId, state, from, size);
     }
@@ -58,8 +58,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getAllForOwner(@RequestHeader("X-Sharer-User-Id") long userId,
                                            @RequestParam(defaultValue = "ALL", required = false) String state,
-                                           @RequestParam(required = false) Integer from,
-                                           @RequestParam(required = false) Integer size) throws NotAvailableException, NotSupportedException, ValidationException {
+                                           @RequestParam(required = false, defaultValue = "0") Integer from,
+                                           @RequestParam(required = false, defaultValue = "100") Integer size) throws NotAvailableException, NotSupportedException, ValidationException {
         log.info("Запрос на просмотр бронирований от пользователя " + userId);
         return bookingService.getAllForOwner(userId, state, from, size);
     }
