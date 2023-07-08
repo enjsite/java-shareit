@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.user.model.User;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Generated
 public class ItemDto {
 
     private long id;
@@ -35,12 +37,6 @@ public class ItemDto {
     private Long requestId;
 
     private List<CommentDto> comments = new ArrayList<>();
-
-    public ItemDto(String name, String description, Boolean available) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
 
     public ItemDto(long id, String name, String description, Boolean available, User owner, Long requestId) {
         this.id = id;
