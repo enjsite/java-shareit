@@ -165,17 +165,6 @@
 					<version>0.8.8</version>
 					<configuration>
 						<output>file</output>
-						<excludes>
-							<!--<exclude>ru/practicum/shareit/booking/Booking.*</exclude>-->
-							<!--<exclude>ru/practicum/shareit/booking/BookingService.*</exclude>
-							<exclude>ru/practicum/shareit/item/ItemService.*</exclude>
-							<exclude>ru/practicum/shareit/request/ItemRequestService.*</exclude>
-							<exclude>ru/practicum/shareit/user/UserService.*</exclude>-->
-							<!--<exclude>ru/practicum/shareit/item/model/Item.*</exclude>
-							<exclude>ru/practicum/shareit/item/model/dto/ItemDto.*</exclude>
-							<exclude>ru/practicum/shareit/request/ItemRequest.*</exclude>
-							<exclude>ru/practicum/shareit/item/comment/Comment.*</exclude>-->
-						</excludes>
 					</configuration>
 					<executions>
 						<execution>
