@@ -20,11 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get(long id) {
-        User user = userRepository.getReferenceById(id);
-        if (user == null) {
-            log.error("Не существует пользователя с id " + id);
-            throw new NullPointerException("Не существует пользователя с id " + id);
-        }
+        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
         return UserMapping.toUserDto(user);
     }
 

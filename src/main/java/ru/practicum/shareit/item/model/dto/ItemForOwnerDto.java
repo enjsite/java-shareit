@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingDtoForItems;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Generated
 public class ItemForOwnerDto {
 
     private long id;
@@ -25,7 +27,7 @@ public class ItemForOwnerDto {
 
     private User owner;
 
-    private Long request;
+    private Long requestId;
 
     private BookingDtoForItems lastBooking;
 
@@ -33,12 +35,12 @@ public class ItemForOwnerDto {
 
     private List<CommentDto> comments = new ArrayList<>();
 
-    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long request) {
+    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
-        this.request = request;
+        this.requestId = requestId;
     }
 }

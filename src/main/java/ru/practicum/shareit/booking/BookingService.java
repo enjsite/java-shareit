@@ -15,7 +15,7 @@ public interface BookingService {
 
     BookingDto get(long userId, long bookingId) throws NotAvailableException;
 
-    List<BookingDto> getAll(long userId, String status) throws NotAvailableException, NotSupportedException;
+    List<BookingDto> getAll(long userId, String status, Integer from, Integer size) throws NotAvailableException, NotSupportedException, ValidationException;
 
-    List<BookingDto> getAllForOwner(long userId, String status) throws NotAvailableException, NotSupportedException;
+    List<BookingDto> getAllForOwner(long userId, String status, Integer from, Integer size) throws NotAvailableException, NotSupportedException, ValidationException;
 }

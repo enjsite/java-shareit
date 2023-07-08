@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "comments")
 @AllArgsConstructor
 @NoArgsConstructor
+@Generated
 public class Comment {
 
     @Id
@@ -35,8 +37,4 @@ public class Comment {
 
     @Column(name = "created")
     private LocalDateTime created = LocalDateTime.now();
-
-    public Comment(String text) {
-        this.text = text;
-    }
 }

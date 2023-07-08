@@ -7,13 +7,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.format.DateTimeFormatter;
-
 @Service
 public class BookingMapper {
-
-    static final DateTimeFormatter formatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     public static BookingDto toBookingDto(Booking booking) {
 
@@ -43,17 +38,15 @@ public class BookingMapper {
     public static Booking mapToBooking(BookingDto bookingDto, User booker, Item item) throws ValidationException {
 
         Booking booking = new Booking();
+        booking.setId(bookingDto.getId());
         booking.setItem(item);
         booking.setBooker(booker);
 
         if (bookingDto.getStart() == null || bookingDto.getEnd() == null) {
             throw new ValidationException("Дата не задана");
         }
-        //booking.setStart(LocalDateTime.from(formatter.parse(bookingDto.getStart())));
-        //booking.setEnd(LocalDateTime.from(formatter.parse(bookingDto.getEnd())));
         booking.setStart(bookingDto.getStart());
         booking.setEnd(bookingDto.getEnd());
-
         return booking;
     }
 }
