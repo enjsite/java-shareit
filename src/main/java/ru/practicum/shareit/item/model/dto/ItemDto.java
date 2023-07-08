@@ -18,7 +18,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Generated
 public class ItemDto {
 
     private long id;
