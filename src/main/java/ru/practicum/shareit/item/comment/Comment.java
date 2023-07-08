@@ -35,8 +35,4 @@ public class Comment {
 
     @Column(name = "created")
     private LocalDateTime created = LocalDateTime.now();
-
-    public Comment(String text) {
-        this.text = text;
-    }
 }

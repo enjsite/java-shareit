@@ -8,7 +8,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import static org.assertj.core.api.Assertions.*;
 
 @JsonTest
-class ErrorResponseJsonTest {
+class ErrorResponseTest {
 
     @Autowired
     private JacksonTester<ErrorResponse> json;
