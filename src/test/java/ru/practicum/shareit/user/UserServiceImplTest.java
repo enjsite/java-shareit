@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapping;
 import ru.practicum.shareit.user.model.dto.UserDto;
