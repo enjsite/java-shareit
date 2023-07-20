@@ -6,13 +6,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapping;
 import ru.practicum.shareit.user.model.dto.UserDto;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -31,7 +35,6 @@ class UserServiceImplTest {
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(expectedUser));
 
         UserDto actualUser = userService.get(userId);
-
         assertEquals(expectedUser, UserMapping.mapToUser(actualUser));
     }
 
@@ -46,6 +49,12 @@ class UserServiceImplTest {
 
     @Test
     void getAllUsers() {
+
+        when(userRepository.findAll()).thenReturn(new ArrayList<>());
+        var result = userRepository.findAll();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(userRepository, times(1)).findAll();
     }
 
     @Test

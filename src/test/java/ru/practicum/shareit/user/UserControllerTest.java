@@ -37,7 +37,6 @@ class UserControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedUsers, response.getBody());
-        //assertTrue(response.getBody().isEmpty());
     }
 
     @Test

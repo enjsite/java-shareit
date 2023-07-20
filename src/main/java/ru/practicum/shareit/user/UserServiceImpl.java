@@ -56,24 +56,4 @@ public class UserServiceImpl implements UserService {
         log.info("Удаление пользователя {}", id);
         userRepository.deleteById(id);
     }
-
-    private void validateEmail(String email, long userId) throws ValidationException {
-        var users = getAllUsers();
-        for (UserDto u: users) {
-            if (u.getEmail().equals(email) && u.getId() != userId) {
-                log.error("Дубликат email");
-                throw new ValidationException("Дубликат email;");
-            }
-        }
-    }
-
-    private void validateEmail(String email) throws ValidationException {
-        var users = getAllUsers();
-        for (UserDto u: users) {
-            if (u.getEmail().equals(email)) {
-                log.error("Дубликат email");
-                throw new ValidationException("Дубликат email;");
-            }
-        }
-    }
 }
