@@ -94,12 +94,9 @@ class UserControllerTestIT {
 
         Long userId = 0L;
 
-        var result = mockMvc.perform(MockMvcRequestBuilders
+        mockMvc.perform(MockMvcRequestBuilders
                         .delete("/users/{userId}", userId))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(status().isOk());
 
         verify(userService, times(1)).removeUserById(userId);
     }

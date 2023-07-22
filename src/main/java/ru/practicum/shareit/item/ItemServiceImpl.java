@@ -19,7 +19,6 @@ import ru.practicum.shareit.item.model.dto.ItemForOwnerDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
@@ -43,11 +41,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addNewItem(long userId, ItemDto itemDto) {
         User owner = userRepository.findById(userId).orElseThrow();
         itemDto.setOwner(owner);
-
         ItemRequest itemRequest = itemDto.getRequestId() != null ?
                 itemRequestRepository.getReferenceById(itemDto.getRequestId()) : null;
         Item item = ItemMapping.mapToItem(itemDto, owner, itemRequest);
-
         return ItemMapping.toItemDto(itemRepository.save(item));
     }
 
@@ -122,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItem(long userId, long itemId) {
-        var curUser = userService.get(userId);
+        var curUser = userRepository.findById(userId).orElseThrow();
         var curItem = get(userId, itemId);
         if (userId != curItem.getOwner().getId()) {
             throw new NotFoundException("Пользователь не является владельцем вещи.");
