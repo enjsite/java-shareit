@@ -14,15 +14,12 @@ import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapping;
 import ru.practicum.shareit.item.model.dto.ItemDto;
-import ru.practicum.shareit.item.model.dto.ItemForOwnerDto;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
