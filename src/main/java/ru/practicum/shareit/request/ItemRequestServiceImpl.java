@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,11 +23,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class ItemRequestServiceImpl implements ItemRequestService {
 
-    private final ItemRequestRepository itemRequestRepository;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    ItemRequestRepository itemRequestRepository;
+    UserRepository userRepository;
+    ItemRepository itemRepository;
 
     @Override
     public ItemRequestDto add(long userId, ItemRequestDto itemRequestDto) {
@@ -61,7 +64,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         User user = userRepository.findById(userId).orElseThrow();
         if (from < 0 || size < 1) {
-            throw new ValidationException("Недопустимые значения пагинации");
+            throw new ValidationException(String.format("Недопустимые значения пагинации: параметр from %s (не может быть меньше 0) и параметр size %s (не может быть меньше 1)", from, size));
         }
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "created"));
         Page<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNot(userId, pageable);

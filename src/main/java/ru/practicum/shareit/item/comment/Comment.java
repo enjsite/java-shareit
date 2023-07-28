@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,24 +15,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
+@FieldDefaults(makeFinal=false, level= AccessLevel.PRIVATE)
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    long id;
 
     @NotBlank(message = "Отзыв не должен быть пустым")
     @Column(name = "text")
-    private String text;
+    String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
-    private Item item;
+    Item item;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    private User author;
+    User author;
 
     @Column(name = "created")
-    private LocalDateTime created = LocalDateTime.now();
+    LocalDateTime created = LocalDateTime.now();
 }

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +36,8 @@ class ItemRequestControllerTest {
     @MockBean
     private ItemRequestService itemRequestService;
 
-    @SneakyThrows
     @Test
-    void add() {
+    void add() throws Exception {
 
         long userId = 1L;
         var requestor = new User(userId, "NameR", "requestor@mail.ru");
@@ -65,9 +63,8 @@ class ItemRequestControllerTest {
         verify(itemRequestService, times(1)).add(userId, itemRequestDto);
     }
 
-    @SneakyThrows
     @Test
-    void getByRequestor() {
+    void getByRequestor() throws Exception {
 
         long userId = 0L;
 
@@ -79,9 +76,8 @@ class ItemRequestControllerTest {
         verify(itemRequestService, times(1)).getByRequestorId(userId);
     }
 
-    @SneakyThrows
     @Test
-    void get() {
+    void get() throws Exception {
 
         long userId = 0L;
         long requestId = 1L;
@@ -94,9 +90,8 @@ class ItemRequestControllerTest {
         verify(itemRequestService, times(1)).get(userId, requestId);
     }
 
-    @SneakyThrows
     @Test
-    void getAll() {
+    void getAll() throws Exception {
 
         long userId = 0L;
 

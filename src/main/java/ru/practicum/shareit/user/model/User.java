@@ -1,9 +1,7 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
@@ -16,17 +14,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
+@FieldDefaults(level= AccessLevel.PRIVATE)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    long id;
 
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Column(name = "email")
-    private String email;
+    String email;
 
     public User(String name, String email) {
         this.name = name;

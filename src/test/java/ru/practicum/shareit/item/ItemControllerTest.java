@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -50,9 +49,8 @@ class ItemControllerTest {
         owner.setName("Owner");
     }
 
-    @SneakyThrows
     @Test
-    void get() {
+    void get() throws Exception {
 
         long userId = 0L;
         long itemId = 1L;
@@ -64,9 +62,8 @@ class ItemControllerTest {
         verify(itemService, times(1)).get(userId, itemId);
     }
 
-    @SneakyThrows
     @Test
-    void getAllItemsByUserId() {
+    void getAllItemsByUserId() throws Exception {
 
         long userId = 0L;
 
@@ -77,9 +74,8 @@ class ItemControllerTest {
         verify(itemService, times(1)).getItems(userId);
     }
 
-    @SneakyThrows
     @Test
-    void search() {
+    void search() throws Exception {
 
         long userId = 0L;
 
@@ -90,9 +86,8 @@ class ItemControllerTest {
         verify(itemService, times(1)).search(userId, "txt");
     }
 
-    @SneakyThrows
     @Test
-    void add() {
+    void add() throws Exception {
 
         long userId = owner.getId();
         var itemDto = new ItemDto(3L, "updatedItemName", "updatedItemDescription", true, owner, null);
@@ -112,9 +107,8 @@ class ItemControllerTest {
         verify(itemService, times(1)).addNewItem(userId, itemDto);
     }
 
-    @SneakyThrows
     @Test
-    void update() {
+    void update() throws Exception {
 
         long userId = owner.getId();
         var itemDto = new ItemDto(3L, "updatedItemName", "updatedItemDescription", true, owner, null);
@@ -135,9 +129,8 @@ class ItemControllerTest {
         verify(itemService, times(1)).update(itemId, itemDto, userId);
     }
 
-    @SneakyThrows
     @Test
-    void deleteItem() {
+    void deleteItem() throws Exception {
 
         long userId = owner.getId();
         var itemForOwner = new ItemForOwnerDto();
@@ -155,9 +148,8 @@ class ItemControllerTest {
         verify(itemService, times(1)).deleteItem(userId, itemForOwner.getId());
     }
 
-    @SneakyThrows
     @Test
-    void addComment() {
+    void addComment() throws Exception {
 
         long userId = 1L;
         long itemId = 2L;

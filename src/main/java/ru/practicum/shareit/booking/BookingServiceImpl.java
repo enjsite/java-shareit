@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,11 +27,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class BookingServiceImpl implements BookingService {
 
-    private final BookingRepository bookingRepository;
-    private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    BookingRepository bookingRepository;
+    ItemRepository itemRepository;
+    UserRepository userRepository;
 
     @Override
     public BookingDto add(long userId, BookingDto bookingDto) throws NotAvailableException, ValidationException {
@@ -72,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
         if (!(user.getId() == booking.getBooker().getId() || user.getId() == booking.getItem().getOwner().getId())) {
-            throw new NotFoundException("Нет доступа");
+            throw new NotFoundException("У пользователя нет доступа к этому бронированию");
         }
 
         return BookingMapper.toBookingDto(booking);
@@ -83,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findById(userId).orElseThrow();
 
         if (from < 0 || size < 1) {
-            throw new ValidationException("Недопустимые значения пагинации");
+            throw new ValidationException(String.format("Недопустимые значения пагинации: параметр from %s (не может быть меньше 0) и параметр size %s (не может быть меньше 1)", from, size));
         }
 
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "start"));
@@ -122,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findById(userId).orElseThrow();
 
         if (from < 0 || size < 1) {
-            throw new ValidationException("Недопустимые значения пагинации");
+            throw new ValidationException(String.format("Недопустимые значения пагинации: параметр from %s (не может быть меньше 0) и параметр size %s (не может быть меньше 1)", from, size));
         }
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "start"));
 

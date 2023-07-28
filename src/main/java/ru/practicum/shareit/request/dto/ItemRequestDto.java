@@ -1,9 +1,7 @@
 package ru.practicum.shareit.request.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.model.dto.ItemForRequestDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -19,18 +17,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
+@FieldDefaults(makeFinal=false, level= AccessLevel.PRIVATE)
 public class ItemRequestDto {
 
-    private long id;
+    long id;
 
     @NotBlank(message = "Описание не должно быть пустым")
-    private String description;
+    String description;
 
-    private User requestor;
+    User requestor;
 
-    private LocalDateTime created = LocalDateTime.now();
+    LocalDateTime created = LocalDateTime.now();
 
-    private List<ItemForRequestDto> items = new ArrayList<>();
+    List<ItemForRequestDto> items = new ArrayList<>();
 
     public ItemRequestDto(long id, String description, User requestor, LocalDateTime created) {
         this.id = id;

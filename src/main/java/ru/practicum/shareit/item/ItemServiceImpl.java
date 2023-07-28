@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
@@ -29,13 +31,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
-    private final BookingRepository bookingRepository;
-    private final CommentRepository commentRepository;
-    private final ItemRequestRepository itemRequestRepository;
+    ItemRepository itemRepository;
+    UserRepository userRepository;
+    BookingRepository bookingRepository;
+    CommentRepository commentRepository;
+    ItemRequestRepository itemRequestRepository;
 
     @Override
     public ItemDto addNewItem(long userId, ItemDto itemDto) {

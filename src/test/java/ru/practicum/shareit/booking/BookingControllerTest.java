@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +47,8 @@ class BookingControllerTest {
         booker.setName("Booker");
     }
 
-    @SneakyThrows
     @Test
-    void add() {
+    void add() throws Exception {
 
         long userId = 0L;
         var bookingDto = new BookingDto(1L, 3L, LocalDateTime.now(), LocalDateTime.now(), booker, item, BookingStatus.WAITING);
@@ -71,9 +69,8 @@ class BookingControllerTest {
         verify(bookingService, times(1)).add(userId, bookingDto);
     }
 
-    @SneakyThrows
     @Test
-    void approved() {
+    void approved() throws Exception {
 
         long userId = 0L;
         long bookingId = 1L;
@@ -90,9 +87,8 @@ class BookingControllerTest {
         verify(bookingService, times(1)).approved(userId, bookingId, true);
     }
 
-    @SneakyThrows
     @Test
-    void get() {
+    void get() throws Exception {
 
         long userId = 0L;
         long bookingId = 1L;
@@ -104,9 +100,8 @@ class BookingControllerTest {
         verify(bookingService, times(1)).get(userId, bookingId);
     }
 
-    @SneakyThrows
     @Test
-    void getAll() {
+    void getAll() throws Exception {
 
         long userId = 0L;
 
@@ -117,9 +112,8 @@ class BookingControllerTest {
         verify(bookingService, times(1)).getAll(userId, "ALL", 0, 100);
     }
 
-    @SneakyThrows
     @Test
-    void getAllForOwner() {
+    void getAllForOwner() throws Exception {
 
         long userId = 0L;
 

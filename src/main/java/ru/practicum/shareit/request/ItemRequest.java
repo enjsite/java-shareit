@@ -1,9 +1,7 @@
 package ru.practicum.shareit.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -19,20 +17,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
+@FieldDefaults(makeFinal=false, level= AccessLevel.PRIVATE)
 public class ItemRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    long id;
 
     @Column(name = "description")
     @NotBlank(message = "Описание не должно быть пустым")
-    private String description;
+    String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "requestor_id")
-    private User requestor;
+    User requestor;
 
     @Column(name = "created")
-    private LocalDateTime created;
+    LocalDateTime created;
 }

@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -18,28 +16,29 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Generated
+@FieldDefaults(makeFinal=false, level= AccessLevel.PRIVATE)
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    long id;
 
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Column(name = "description")
-    private String description;
+    String description;
 
     @Column(name = "available")
-    private Boolean available;
+    Boolean available;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
-    private User owner;
+    User owner;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "request_id")
-    private ItemRequest request;
+    ItemRequest request;
 
     public Item(String name, String description, Boolean available) {
         this.name = name;

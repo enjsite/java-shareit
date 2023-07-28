@@ -1,8 +1,10 @@
 package ru.practicum.shareit.item.model.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,24 +19,25 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(makeFinal=false, level= AccessLevel.PRIVATE)
 public class ItemDto {
 
-    private long id;
+    long id;
 
     @NotBlank(message = "Имя не должно быть пустым")
-    private String name;
+    String name;
 
     @NotBlank(message = "Описание не должно быть пустым")
-    private String description;
+    String description;
 
     @NotNull(message = "Доступность должна быть указана")
-    private Boolean available;
+    Boolean available;
 
-    private User owner;
+    User owner;
 
-    private Long requestId;
+    Long requestId;
 
-    private List<CommentDto> comments = new ArrayList<>();
+    List<CommentDto> comments = new ArrayList<>();
 
     public ItemDto(long id, String name, String description, Boolean available, User owner, Long requestId) {
         this.id = id;
