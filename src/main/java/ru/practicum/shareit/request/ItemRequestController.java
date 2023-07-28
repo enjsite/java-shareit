@@ -41,8 +41,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
-                                       @RequestParam(required = false) Integer from,
-                                       @RequestParam(required = false) Integer size) throws ValidationException {
+                                       @RequestParam(required = false, defaultValue = "0") Integer from,
+                                       @RequestParam(required = false, defaultValue = "100") Integer size) throws ValidationException {
         log.info("Посмотреть запросы других пользователей.");
         return itemRequestService.getAll(userId, from, size);
     }

@@ -27,14 +27,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-
     @Override
     public ItemRequestDto add(long userId, ItemRequestDto itemRequestDto) {
 
         User requestor = userRepository.findById(userId).orElseThrow();
         itemRequestDto.setRequestor(requestor);
         ItemRequest itemRequest = ItemRequestMapper.mapToItemRequest(itemRequestDto);
-
         return ItemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest));
     }
 
@@ -65,13 +63,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         User user = userRepository.findById(userId).orElseThrow();
 
-        if (from == null && size == null) {
-            from = 0;
-            size = 100;
-        } else if (from < 0 || size < 1) {
+        if (from < 0 || size < 1) {
             throw new ValidationException("Недопустимые значения пагинации");
         }
-
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "created"));
         Page<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNot(userId, pageable);
 
