@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.exception.NotAvailableException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.NotSupportedException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -38,7 +39,7 @@ class BookingServiceImplTest {
 
     private Booking booking;
 
-    private Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "start"));
+    private final Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "start"));
 
     private LocalDateTime now;
 
@@ -69,6 +70,31 @@ class BookingServiceImplTest {
 
         assertEquals(BookingMapper.toBookingDto(booking), result);
         verify(bookingRepository, times(1)).save(booking);
+    }
+
+    @Test
+    void addBooking_WhenItemIsNotAvailable_ThenNotAvailableException() {
+
+        long userId = 0L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        item.setAvailable(false);
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(NotAvailableException.class,
+                () -> bookingService.add(userId, BookingMapper.toBookingDto(booking)));
+    }
+
+    @Test
+    void addBooking_WhenOwnerIsBooker_ThenNotFoundException() {
+
+        long userId = 2L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(owner));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.add(userId, BookingMapper.toBookingDto(booking)));
     }
 
     @Test
