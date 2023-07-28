@@ -1,16 +1,22 @@
 package ru.practicum.shareit.request;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,6 +64,14 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getByRequestorId() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.findAllByRequestor(user)).thenReturn(new ArrayList<>());
+        var result = itemRequestService.getByRequestorId(user.getId());
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(itemRequestRepository, times(1)).findAllByRequestor(user);
     }
 
     @Test
@@ -71,7 +85,17 @@ class ItemRequestServiceImplTest {
         assertEquals(ItemRequestMapper.toItemRequestDto(itemRequest), result);
     }
 
+    @SneakyThrows
     @Test
     void getAll() {
+
+        Pageable pageable = PageRequest.of(0 / 100, 100, Sort.by(Sort.Direction.ASC, "created"));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRequestRepository.findAllByRequestorIdNot(user.getId(), pageable)).thenReturn(Page.empty());
+
+        var result = itemRequestService.getAll(user.getId(), 0, 100);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(itemRequestRepository, times(1)).findAllByRequestorIdNot(user.getId(), pageable);
     }
 }

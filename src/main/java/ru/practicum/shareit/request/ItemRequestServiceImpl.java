@@ -41,7 +41,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         User requestor = userRepository.findById(userId).orElseThrow();
         List<ItemRequest> requests = itemRequestRepository.findAllByRequestor(requestor);
-
         return requests.stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .map(this::setItemsForRequest)
@@ -54,7 +53,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow();
         ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
         itemRequestDto = setItemsForRequest(itemRequestDto);
-
         return itemRequestDto;
     }
 
@@ -62,13 +60,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> getAll(long userId, Integer from, Integer size) throws ValidationException {
 
         User user = userRepository.findById(userId).orElseThrow();
-
         if (from < 0 || size < 1) {
             throw new ValidationException("Недопустимые значения пагинации");
         }
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "created"));
         Page<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestorIdNot(userId, pageable);
-
         return itemRequests.stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .map(this::setItemsForRequest)
@@ -76,7 +72,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private ItemRequestDto setItemsForRequest(ItemRequestDto itemRequestDto) {
-
         List<Item> items = itemRepository.findAllByRequestId(itemRequestDto.getId());
         itemRequestDto.setItems(items.stream().map(ItemMapping::toItemForRequestDto).collect(Collectors.toList()));
         return itemRequestDto;
