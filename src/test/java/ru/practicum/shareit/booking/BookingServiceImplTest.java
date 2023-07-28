@@ -98,6 +98,68 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void addBooking_WhenBookingStartIsNull_ThenValidationException() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        booking.setStart(null);
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.add(user.getId(), BookingMapper.toBookingDto(booking)));
+    }
+
+    @Test
+    void addBooking_WhenBookingEndInPast_ThenValidationException() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        booking.setEnd(LocalDateTime.now().minusDays(2));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.add(user.getId(), BookingMapper.toBookingDto(booking)));
+    }
+
+    @Test
+    void addBooking_WhenBookingStartInPast_ThenValidationException() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        booking.setStart(LocalDateTime.now().minusDays(2));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.add(user.getId(), BookingMapper.toBookingDto(booking)));
+    }
+
+    @Test
+    void addBooking_WhenBookingEndIsBeforeStart_ThenValidationException() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        booking.setStart(LocalDateTime.now().plusDays(2));
+        booking.setEnd(LocalDateTime.now().plusDays(1));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.add(user.getId(), BookingMapper.toBookingDto(booking)));
+    }
+
+    @Test
+    void addBooking_WhenBookingEndIsEqualsStart_ThenValidationException() {
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        booking.setStart(now.plusHours(1));
+        booking.setEnd(now.plusHours(1));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.add(user.getId(), BookingMapper.toBookingDto(booking)));
+    }
+
+    @Test
     void approved() throws ValidationException {
         when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
         when(bookingRepository.findById(4L)).thenReturn(Optional.of(booking));
@@ -105,6 +167,27 @@ class BookingServiceImplTest {
         var result = bookingService.approved(owner.getId(), booking.getId(), true);
         assertEquals(booking.getStatus(), result.getStatus());
         assertEquals(BookingStatus.APPROVED, result.getStatus());
+    }
+
+    @Test
+    void approved_whenBookingAlreadyApproved_thenNotFoundException() {
+        when(userRepository.findById(owner.getId())).thenReturn(Optional.of(owner));
+        booking.setStatus(BookingStatus.APPROVED);
+        when(bookingRepository.findById(4L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.approved(owner.getId(), booking.getId(), true));
+    }
+
+    @Test
+    void approved_whenBookerIsNotOwner_thenNotFoundException() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(bookingRepository.findById(4L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.save(booking)).thenReturn(booking);
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.approved(user.getId(), booking.getId(), true));
     }
 
     @Test
@@ -128,6 +211,16 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void get_whenUserIsNotOwnerOrBooker_thenNotFoundException() {
+        User otherUser = new User(5L, "userName", "userEmail@mail.ru");
+        when(userRepository.findById(otherUser.getId())).thenReturn(Optional.of(otherUser));
+        when(bookingRepository.findById(4L)).thenReturn(Optional.of(booking));
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.get(otherUser.getId(), 4L));
+    }
+
+    @Test
     void getAllByBooker() throws ValidationException, NotSupportedException {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(bookingRepository.findAllByBookerOrderByStartDesc(user, pageable)).thenReturn(Page.empty());
@@ -135,6 +228,15 @@ class BookingServiceImplTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(bookingRepository, times(1)).findAllByBookerOrderByStartDesc(user, pageable);
+    }
+
+    @Test
+    void getAllByBooker_whenPaginationParamsIsNotCorrect_thenValidationException() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(bookingRepository.findAllByBookerOrderByStartDesc(user, pageable)).thenReturn(Page.empty());
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.getAll(1L, BookingStatus.ALL.toString(), -1, 0));
     }
 
     @Test
@@ -195,6 +297,15 @@ class BookingServiceImplTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(bookingRepository, times(1)).findAllByItemOwnerIdOrderByStartDesc(user.getId(), pageable);
+    }
+
+    @Test
+    void getAllByOwner_whenPaginationParamsIsNotCorrect_thenValidationException() {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(user.getId(), pageable)).thenReturn(Page.empty());
+
+        assertThrows(ValidationException.class,
+                () -> bookingService.getAllForOwner(1L, BookingStatus.ALL.toString(), -1, 0));
     }
 
     @Test
