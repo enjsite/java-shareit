@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "bookings")
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(makeFinal=false, level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Generated
 public class Booking {
 
