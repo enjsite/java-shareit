@@ -1,8 +1,7 @@
 package ru.practicum.shareit.item.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDtoForItems;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.user.model.User;
@@ -13,32 +12,34 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Generated
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemForOwnerDto {
 
-    private long id;
+    long id;
 
-    private String name;
+    String name;
 
-    private String description;
+    String description;
 
-    private Boolean available;
+    Boolean available;
 
-    private User owner;
+    User owner;
 
-    private Long request;
+    Long requestId;
 
-    private BookingDtoForItems lastBooking;
+    BookingDtoForItems lastBooking;
 
-    private BookingDtoForItems nextBooking;
+    BookingDtoForItems nextBooking;
 
-    private List<CommentDto> comments = new ArrayList<>();
+    List<CommentDto> comments = new ArrayList<>();
 
-    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long request) {
+    public ItemForOwnerDto(long id, String name, String description, Boolean available, User owner, Long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
-        this.request = request;
+        this.requestId = requestId;
     }
 }

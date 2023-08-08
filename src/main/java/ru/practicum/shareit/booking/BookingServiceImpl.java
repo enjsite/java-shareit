@@ -1,7 +1,13 @@
 package ru.practicum.shareit.booking;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.NotAvailableException;
@@ -21,11 +27,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BookingServiceImpl implements BookingService {
 
-    private final BookingRepository bookingRepository;
-    private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    BookingRepository bookingRepository;
+    ItemRepository itemRepository;
+    UserRepository userRepository;
 
     @Override
     public BookingDto add(long userId, BookingDto bookingDto) throws NotAvailableException, ValidationException {
@@ -68,73 +75,88 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
         if (!(user.getId() == booking.getBooker().getId() || user.getId() == booking.getItem().getOwner().getId())) {
-            throw new NotFoundException("Нет доступа");
+            throw new NotFoundException("У пользователя нет доступа к этому бронированию");
         }
 
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
-    public List<BookingDto> getAll(long userId, String status) throws NotSupportedException {
+    public List<BookingDto> getAll(long userId, String status, Integer from, Integer size) throws NotSupportedException, ValidationException {
         User user = userRepository.findById(userId).orElseThrow();
-        List<Booking> bookings;
+
+        if (from < 0 || size < 1) {
+            throw new ValidationException(String.format("Недопустимые значения пагинации: параметр from %s (не может быть меньше 0) и параметр size %s (не может быть меньше 1)", from, size));
+        }
+
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "start"));
+        List<Booking> bookings = new ArrayList<>();
+        Page<Booking> b = null;
 
         switch (status) {
             case "ALL":
-                bookings = bookingRepository.findAllByBookerOrderByStartDesc(user);
+                b = bookingRepository.findAllByBookerOrderByStartDesc(user, pageable);
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findAllByBookerCurrentOrderByStartDesc(user, LocalDateTime.now());
+                b = bookingRepository.findAllByBookerCurrentOrderByStartDesc(user, LocalDateTime.now(), pageable);
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findAllByBookerFutureOrderByStartDesc(user, LocalDateTime.now());
+                b = bookingRepository.findAllByBookerFutureOrderByStartDesc(user, LocalDateTime.now(), pageable);
                 break;
             case "PAST":
-                bookings = bookingRepository.findAllByBookerAndEndBeforeOrderByStartDesc(user, LocalDateTime.now());
+                b = bookingRepository.findAllByBookerAndEndBeforeOrderByStartDesc(user, LocalDateTime.now(), pageable);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findAllByBookerAndStatusOrderByStartDesc(user, BookingStatus.REJECTED);
+                b = bookingRepository.findAllByBookerAndStatusOrderByStartDesc(user, BookingStatus.REJECTED, pageable);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findAllByBookerAndStatusOrderByStartDesc(user, BookingStatus.WAITING);
+                b = bookingRepository.findAllByBookerAndStatusOrderByStartDesc(user, BookingStatus.WAITING, pageable);
                 break;
 
             default:
                 throw new NotSupportedException("Unknown state: UNSUPPORTED_STATUS");
         }
-
+        bookings = b != null ? b.getContent() : bookings;
         return bookings.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingDto> getAllForOwner(long userId, String status) throws NotSupportedException {
+    public List<BookingDto> getAllForOwner(long userId, String status, Integer from, Integer size) throws NotSupportedException, ValidationException {
         User user = userRepository.findById(userId).orElseThrow();
+
+        if (from < 0 || size < 1) {
+            throw new ValidationException(String.format("Недопустимые значения пагинации: параметр from %s (не может быть меньше 0) и параметр size %s (не может быть меньше 1)", from, size));
+        }
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "start"));
+
         List<Booking> bookings = new ArrayList<>();
+        Page<Booking> b = null;
 
         switch (status) {
             case "ALL":
-                bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+                b = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
                 break;
             case "CURRENT":
-                bookings = bookingRepository.findAllByItemOwnerIdCurrentOrderByStartDesc(user, LocalDateTime.now());
+                b = bookingRepository.findAllByItemOwnerIdCurrentOrderByStartDesc(user, LocalDateTime.now(), pageable);
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findAllByItemOwnerIdFutureOrderByStartDesc(user, LocalDateTime.now());
+                b = bookingRepository.findAllByItemOwnerIdFutureOrderByStartDesc(user, LocalDateTime.now(), pageable);
                 break;
             case "PAST":
-                bookings = bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(user.getId(), LocalDateTime.now());
+                b = bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(user.getId(), LocalDateTime.now(), pageable);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(user.getId(), BookingStatus.REJECTED);
+                b = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(user.getId(), BookingStatus.REJECTED, pageable);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(user.getId(), BookingStatus.WAITING);
+                b = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(user.getId(), BookingStatus.WAITING, pageable);
                 break;
 
             default:
                 throw new NotSupportedException("Unknown state: UNSUPPORTED_STATUS");
         }
 
+        bookings = b != null ? b.getContent() : bookings;
         return bookings.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 

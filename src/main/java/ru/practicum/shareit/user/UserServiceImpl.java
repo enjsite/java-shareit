@@ -20,11 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get(long id) {
-        User user = userRepository.getReferenceById(id);
-        if (user == null) {
-            log.error("Не существует пользователя с id " + id);
-            throw new NullPointerException("Не существует пользователя с id " + id);
-        }
+        User user = userRepository.findById(id).orElseThrow(NullPointerException::new);
         return UserMapping.toUserDto(user);
     }
 
@@ -59,25 +55,5 @@ public class UserServiceImpl implements UserService {
     public void removeUserById(long id) {
         log.info("Удаление пользователя {}", id);
         userRepository.deleteById(id);
-    }
-
-    private void validateEmail(String email, long userId) throws ValidationException {
-        var users = getAllUsers();
-        for (UserDto u: users) {
-            if (u.getEmail().equals(email) && u.getId() != userId) {
-                log.error("Дубликат email");
-                throw new ValidationException("Дубликат email;");
-            }
-        }
-    }
-
-    private void validateEmail(String email) throws ValidationException {
-        var users = getAllUsers();
-        for (UserDto u: users) {
-            if (u.getEmail().equals(email)) {
-                log.error("Дубликат email");
-                throw new ValidationException("Дубликат email;");
-            }
-        }
     }
 }
