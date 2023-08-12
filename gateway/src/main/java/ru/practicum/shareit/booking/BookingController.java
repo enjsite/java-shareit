@@ -21,17 +21,17 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated
 public class BookingController {
 	private final BookingClient bookingClient;
-	private final static String userHeader = "X-Sharer-User-Id";
+	private final static String userIdHeader = "X-Sharer-User-Id";
 
 	@PostMapping
-	public ResponseEntity<Object> add(@RequestHeader(userHeader) long userId,
+	public ResponseEntity<Object> add(@RequestHeader(userIdHeader) long userId,
 									  @RequestBody @Valid BookingDto bookingDto) {
 		log.info("Creating booking {}, userId={}", bookingDto, userId);
 		return bookingClient.add(userId, bookingDto);
 	}
 
 	@PatchMapping("/{bookingId}")
-	public ResponseEntity<Object> approved(@RequestHeader(userHeader) long userId,
+	public ResponseEntity<Object> approved(@RequestHeader(userIdHeader) long userId,
 											@PathVariable Integer bookingId,
 											@RequestParam boolean approved) {
 		log.info(String.format("Получен запрос на подтвержение бронирования %d", userId));
@@ -40,14 +40,14 @@ public class BookingController {
 	}
 
 	@GetMapping("/{bookingId}")
-	public ResponseEntity<Object> getBooking(@RequestHeader(userHeader) long userId,
+	public ResponseEntity<Object> getBooking(@RequestHeader(userIdHeader) long userId,
 											 @PathVariable Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
 		return bookingClient.getBooking(userId, bookingId);
 	}
 
 	@GetMapping({"/", ""})
-	public ResponseEntity<Object> getBookings(@RequestHeader(userHeader) long userId,
+	public ResponseEntity<Object> getBookings(@RequestHeader(userIdHeader) long userId,
 			@RequestParam(name = "state", defaultValue = "ALL") String state,
 			@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 			@Positive @RequestParam(name = "size", defaultValue = "100") Integer size) {
@@ -58,7 +58,7 @@ public class BookingController {
 	}
 
 	@GetMapping("/owner")
-	public ResponseEntity<Object> getAllForOwner(@RequestHeader(userHeader) long userId,
+	public ResponseEntity<Object> getAllForOwner(@RequestHeader(userIdHeader) long userId,
 											  @RequestParam(name = "state", defaultValue = "ALL") String state,
 											  @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 											  @Positive @RequestParam(name = "size", defaultValue = "100") Integer size) {
